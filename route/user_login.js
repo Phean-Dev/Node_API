@@ -26,7 +26,6 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
                             pwd: result.pwd,
                             date: new Date()
                         }
-                        console.log(`Logger: Login >> ${req.protocol}://${req.get('host')}${req.originalUrl}:${moment().format()}`);
                         jwt.sign({ user: user }, process.env.TOKEN_KEY, (err, token) => {
                             if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
                             else
