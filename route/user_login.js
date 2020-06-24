@@ -18,24 +18,23 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
             }
             db_collection.findOne({ "email": loginuser.email, "pwd": loginuser.pwd }, (err, result) => {
                 if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
-                else {
-                    if (result != null) {
-                        const user = {
-                            name: result.name,
-                            email: result.email,
-                            pwd: result.pwd,
-                            date: new Date()
-                        }
-                        jwt.sign({ user: user }, process.env.TOKEN_KEY, (err, token) => {
-                            if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
-                            else
-                                res.status(200).json({
-                                    msg: "Success",
-                                    data: token
-                                });
-                        });
+                if (result != null) {
+                    const user = {
+                        name: result.name,
+                        email: result.email,
+                        pwd: result.pwd,
+                        date: new Date()
                     }
+                    jwt.sign({ user: user }, process.env.TOKEN_KEY, (err, token) => {
+                        if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
+                        else
+                            res.status(200).json({
+                                msg: "Success",
+                                data: token
+                            });
+                    });
                 }
+                else res.status(400).json({ msg: "Unsuccessfull", data: "Incorrect user name or password." });
             });
         });
         router.post('/register', (req, res) => {
@@ -53,30 +52,29 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
             else {
                 db_collection.findOne({ "email": register.email }, (err, result) => {
                     if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
+                    if (result != null) {
+                        res.status(400).json({ msg: "Unsuccessfull", data: "User existing" });
+
+                    }
                     else {
-                        if (result != null) {
-                            res.status(400).json({ msg: "Unsuccessfull", data: "User existing" });
-                            
-                        }
-                        else {
-                            db_collection.insertOne(register, (err, result) => {
-                                if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
-                                else
-                                    jwt.sign({ user: register }, process.env.TOKEN_KEY, (err, token) => {
-                                        res.status(200).json({
-                                            msg: "Success",
-                                            data: token
-                                        });
+                        db_collection.insertOne(register, (err, result) => {
+                            if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
+                            else
+                                jwt.sign({ user: register }, process.env.TOKEN_KEY, (err, token) => {
+                                    res.status(200).json({
+                                        msg: "Success",
+                                        data: token
                                     });
-                            });
-                        }
-                    };
-                });
-            }
+                                });
+                        });
+                    }
+                };
+            });
+    }
         });
     }, function (err) {
-        throw (err);
-    });
+    throw (err);
+});
 
 module.exports = router;
 

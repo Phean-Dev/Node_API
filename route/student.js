@@ -29,22 +29,19 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_STUDEN
             }
             db_connection.insertOne(student, (err, result) => {
                 if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
-                else {
-                    db_connection.find().toArray((err, result) => {
-                        if (err) res.status(500).json({ msg: "Internal server error.", data: "" })
-                        else {
-                            res.status(200).json({ msg: "Success", data: result });
-                        }
-                    });
-                }
+                db_connection.find().toArray((err, result) => {
+                    if (err) res.status(500).json({ msg: "Internal server error.", data: "" })
+                    else {
+                        res.status(200).json({ msg: "Success", data: result });
+                    }
+                });
             });
         });
         router.get('/:id', (req, res) => {
             const id = new ID(req.params.id);
             db_connection.findOne({ _id: id }, (err, result) => {
                 if (err) res.status(500).json({ msg: "Internal server error", data: "" });
-                else
-                    res.status(200).json({ msg: "Success", data: result });
+                res.status(200).json({ msg: "Success", data: result });
             });
         });
         router.put('/:id', verifyToken, (req, res) => {
@@ -52,16 +49,14 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_STUDEN
             const stu_data = req.body;
             db_connection.updateOne({ _id: stu_id }, { $set: stu_data }, (err, result) => {
                 if (err) res.status(500).json({ msg: "Success", data: "" });
-                else
-                    res.status(200).json({ msg: "Successs", data: result });
+                res.status(200).json({ msg: "Successs", data: result });
             });
         });
         router.delete('/:id', verifyToken, (req, res) => {
             const id = new ID(req.params.id);
             db_connection.deleteOne({ _id: id }, (err, result) => {
                 if (err) res.status(500).json({ msg: "Internal server error", data: "" });
-                else
-                    res.json({ msg: "Successfull deleted.", data: "" });
+                res.json({ msg: "Successfull deleted.", data: "" });
             });
         });
     }, function (err) {
@@ -79,4 +74,4 @@ function verifyToken(req, res, next) {
         })
     } else { res.status(401).json({ msg: "Authorize unsuccessful.", data: "" }); }
 }
-module.exports=router;
+module.exports = router;
