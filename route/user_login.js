@@ -68,9 +68,8 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
                                 });
                         });
                     }
-                };
-            });
-    }
+                });
+            }
         });
     }, function (err) {
     throw (err);
