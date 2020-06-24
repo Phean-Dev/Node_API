@@ -26,8 +26,6 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
                         date: new Date()
                     }
                     jwt.sign({ user: user }, process.env.TOKEN_KEY, (err, token) => {
-                        if (err) res.status(200).json({ ret_code=-1, msg: "Internal server error.", data: "" });
-                        else
                             res.status(200).json({
                                 ret_code:0,
                                 msg: "Success",
@@ -54,12 +52,12 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
                 db_collection.findOne({ "email": register.email }, (err, result) => {
                     if (err) res.status(200).json({ ret_code: -1, msg: "Internal server error.", data: "" });
                     if (result != null) {
-                        res.status(200).json({ ret_code=-1, msg: "Unsuccessfull", data: "User existing" });
+                        res.status(200).json({ ret_code:-1, msg: "Unsuccessfull", data: "User existing" });
 
                     }
                     else {
                         db_collection.insertOne(register, (err, result) => {
-                            if (err) res.status(200).json({ ret_code=-1, msg: "Internal server error.", data: "" });
+                            if (err) res.status(200).json({ ret_code:-1, msg: "Internal server error.", data: "" });
                             else
                                 jwt.sign({ user: register }, process.env.TOKEN_KEY, (err, token) => {
                                     res.status(200).json({
