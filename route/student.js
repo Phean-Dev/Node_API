@@ -9,13 +9,13 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_STUDEN
     (db_collection) => {
         router.get('/', (req, res) => {
             db_collection.find().toArray((err, result) => {
-                if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
-                else res.status(200).json({ msg: "Success", data: result });
+                if (err) res.status(200).json({ret_code:-1, msg: "Internal server error.", data: "" });
+                else res.status(200).json({ret_code:0, msg: "Success", data: result });
             });
         });
         router.post('/', verifyToken, (req, res) => {
             const validate = validate_student.validate(req.body);
-            if (validate.error) return res.status(400).json({ msg: "Invalid field", data: validate.error.details[0].message });
+            if (validate.error) return res.status(200).json({ret_code:-1, msg: "Invalid field", data: validate.error.details[0].message });
             const student = {
                 first_name: req.body.first_name,
                 last_name: req.body.last_name,
@@ -25,14 +25,14 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_STUDEN
                 From: req.body.From
             }
             if (!student.first_name || !student.last_name || !student.From) {
-                return res.status(400).json({ msg: "Please input first_name and last_name." });
+                return res.status(200).json({ret_code:-1, msg: "Please input first_name and last_name." });
             }
             db_connection.insertOne(student, (err, result) => {
-                if (err) res.status(500).json({ msg: "Internal server error.", data: "" });
+                if (err) res.status(200).json({ret_code:-1, msg: "Internal server error.", data: "" });
                 db_connection.find().toArray((err, result) => {
-                    if (err) res.status(500).json({ msg: "Internal server error.", data: "" })
+                    if (err) res.status(200).json({ret_code:-1, msg: "Internal server error.", data: "" })
                     else {
-                        res.status(200).json({ msg: "Success", data: result });
+                        res.status(200).json({ret_code:0, msg: "Success", data: result });
                     }
                 });
             });
@@ -40,23 +40,23 @@ db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_STUDEN
         router.get('/:id', (req, res) => {
             const id = new ID(req.params.id);
             db_connection.findOne({ _id: id }, (err, result) => {
-                if (err) res.status(500).json({ msg: "Internal server error", data: "" });
-                res.status(200).json({ msg: "Success", data: result });
+                if (err) res.status(200).json({ret_code:-1, msg: "Internal server error", data: "" });
+                res.status(200).json({ret_code:0, msg: "Success", data: result });
             });
         });
         router.put('/:id', verifyToken, (req, res) => {
             const stu_id = new ID(req.params.id);
             const stu_data = req.body;
             db_connection.updateOne({ _id: stu_id }, { $set: stu_data }, (err, result) => {
-                if (err) res.status(500).json({ msg: "Success", data: "" });
-                res.status(200).json({ msg: "Successs", data: result });
+                if (err) res.status(200).json({ret_code:-1, msg: "Internal server error", data: "" });
+                res.status(200).json({ret_code:0, msg: "Successs", data: result });
             });
         });
         router.delete('/:id', verifyToken, (req, res) => {
             const id = new ID(req.params.id);
             db_connection.deleteOne({ _id: id }, (err, result) => {
-                if (err) res.status(500).json({ msg: "Internal server error", data: "" });
-                res.json({ msg: "Successfull deleted.", data: "" });
+                if (err) res.status(200).json({ret_code:-1, msg: "Internal server error", data: "" });
+                res.status(200).json({ret_code:0, msg: "Successfull deleted.", data: "" });
             });
         });
     }, function (err) {
