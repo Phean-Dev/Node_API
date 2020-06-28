@@ -2,7 +2,7 @@
 const Joi=require('@hapi/joi');
 
 const validate_login=Joi.object({
-    email:Joi.string().email().min(5).max(50).required(),
+    email:Joi.string().min(5).max(50).required(),
     pwd:Joi.string().min(6).required()
 });
 
