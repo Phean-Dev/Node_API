@@ -8,7 +8,7 @@ const validate_login=Joi.object({
 
 const validate_user=Joi.object({
     name:Joi.string().min(5).max(50).required(),
-    email:Joi.string().email().min(5).max(50).required(),
+    email:Joi.string().min(5).max(50).required(),
     pwd:Joi.string().min(6).required()
 });
 
