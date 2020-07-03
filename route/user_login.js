@@ -9,8 +9,10 @@ dotenv.config();
 
 db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
     (db_collection) => {
+        
         router.post('/login', (req, res) => {
             const validate = validate_login.validate(req.body);
+            
             if (validate.error) return res.status(200).json({ ret_code: -1, msg: "Invalid field", data: validate.error.details[0].message });
             const loginuser = {
                 email: req.body.email,
