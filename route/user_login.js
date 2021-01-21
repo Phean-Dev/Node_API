@@ -9,7 +9,6 @@ dotenv.config();
 
 db_connection.initialize(process.env.DATBASE_NAME, process.env.COLLECTION_USER,
     (db_collection) => {
-        
         router.post('/login', (req, res) => {
             const validate = validate_login.validate(req.body);
             
